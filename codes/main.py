@@ -11,6 +11,6 @@ import time
 from starting_game import *
 
 ######## main file ###########
-start_game()
+start_game() #used to start game and ask player details and take you into game
 
 pygame.quit()
