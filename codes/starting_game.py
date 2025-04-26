@@ -1,19 +1,11 @@
-#This module contains functions and details for start of the game
-
-#importing all standard libraries which can be used
 import pygame
-import numpy as np
-import random
-import math
-import sys
-import os
-import time
 
+#inititating pygame
+pygame.init()
+    
 #define function start game
 def start_game():
-    #inititating pygame
-    pygame.init()
-    
+
     #manage fps
     clock = pygame.time.Clock()
     
