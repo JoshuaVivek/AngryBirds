@@ -9,8 +9,11 @@ import time
 
 #importing my modules
 from starting_game import *
+from input_player1 import *
 
 ######## main file ###########
 start_game() #used to start game and ask player details and take you into game
+player1_name = player1() #function to take player1 name  
+print("Player 1 name:", player1_name) #print player1 name
 
 pygame.quit()
