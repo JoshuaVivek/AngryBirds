@@ -39,6 +39,8 @@ def player1(): #function to take player1 name
                     player1_name = player1_name[:-1]
                 if event.key == pygame.K_RETURN:
                     print("Entered:", player1_name)
+                    if(player1_name == ""):
+                        player1_name = "Player 1"
                     return player1_name
                 if event.key == pygame.K_ESCAPE:
                     running = False
