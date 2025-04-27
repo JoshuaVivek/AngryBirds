@@ -8,6 +8,10 @@ def player1(): #function to take player1 name
     #screen settings
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN) #pygame.FULLSCREEN flag to keep game in full screen
     screen_width, screen_height = screen.get_size()
+    
+    # setting a name for game window
+    pygame.display.set_caption('Angry Birds(Multiplayer)')   ##we dont need it but just kept for my own intrest
+    
 
     # Load background image
     background2 = pygame.image.load("images\Player1_name_input.png") # Replace backgroung with your image

@@ -31,6 +31,8 @@ def start_game():
     running_starting = True
     while running_starting:
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     running_starting = False #we are in full screen so no wrong button
