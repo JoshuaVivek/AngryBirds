@@ -1,1 +1,2 @@
-Angry Birds(Multiplayer)
+
+from input_player1 import *
