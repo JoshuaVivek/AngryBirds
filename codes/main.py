@@ -43,31 +43,44 @@ screen_width, screen_height = screen.get_size()
 #block images for different health ranges
 # Wood block images
 wood_images = {
-    range(2, 31): "images\wood__(30_0).png",
+    range(1, 31): "images\wood__(30_0).png",
     range(32, 71): "images\wood__(70_30).png",
     range(72, 101): "images\wood__(100_70).png"
 }
 
 # Stone block images
 stone_images = {
-    range(2, 31): "images\stone__(30_0).png",
+    range(1, 31): "images\stone__(30_0).png",
     range(32, 71): "images\stone__(70_30).png",
     range(72, 101): "images\stone__(100_70).png"
 }
 
 # Ice block images
 ice_images = {
-    range(2, 31): "images\ice__(30_0).png",
+    range(1, 31): "images\ice__(30_0).png",
     range(32, 71): "images\ice__(70_30).png",
     range(72, 101): "images\ice__(100_70).png"
 }
 
 # assigning coordinates to blocks
 coordinates = [(50, screen_height - 50), (50, screen_height - 100), (50, screen_height - 150),(50, screen_height - 200),(50, screen_height - 250),(50, screen_height - 300),(screen_width - 100, screen_height -300),(screen_width - 100, screen_height - 250),(screen_width - 100, screen_height - 200),(screen_width - 100, screen_height - 150),(screen_width - 100, screen_height - 100),(screen_width - 100, screen_height - 50)]
-get_block = assign_blocks_to_coordinates(coordinates) #assigning blocks to coordinates
-blocks = list(get_block.values()) #getting blocks from dictionary
+block_type = assign_blocks_to_coordinates(coordinates) #assigning blocks to coordinates
+blocks = list(block_type.values()) #getting blocks from dictionary
 
 
+# Create the Block objects based on the random block types
+block = []
+
+# Iterate over the list and create Block objects
+for block_type in blocks:
+    if block_type == "wood":
+        block1 = Block(block_type="wood_block", max_health=100, images=wood_images)
+    elif block_type == "stone":
+        block1 = Block(block_type="stone_block", max_health=100, images=stone_images)
+    elif block_type == "ice":
+        block1 = Block(block_type="ice_block", max_health=100, images=ice_images)
+    
+    block.append(block1)
 
 pygame.display.set_caption("Angry Birds(Multiplayer)")
 
@@ -103,6 +116,17 @@ while running:
     screen.blit(sling_image1, sling_left_pos)
     screen.blit(sling_image2, sling_right_pos)
     
+    # Loop through each block and its coordinate
+    for i in range(len(blocks)):
+        current_block = block[i]  # Get the block
+        x, y = coordinates[i]  # Get the corresponding coordinate
+        
+        image_path = current_block.get_image()  # Get the image path for the block
+        block_image = pygame.image.load(image_path).convert()  # Load the image
+        
+        # Draw the block image at the (x, y) position
+        screen.blit(block_image, (x, y))
+        
     # Update display
     pygame.display.flip()
     clock.tick(60)
