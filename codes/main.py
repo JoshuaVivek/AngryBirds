@@ -122,7 +122,7 @@ while running:
         x, y = coordinates[i]  # Get the corresponding coordinate
         
         image_path = current_block.get_image()  # Get the image path for the block
-        block_image = pygame.image.load(image_path).convert()  # Load the image
+        block_image = pygame.image.load(image_path).convert_alpha()  # Load the image
         
         # Draw the block image at the (x, y) position
         screen.blit(block_image, (x, y))
