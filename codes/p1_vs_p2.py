@@ -25,7 +25,7 @@ def player1_vs_player2(player1_name, player2_name):
     running = True
     while running:
         for event in pygame.event.get():
-            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_q):
                 running = False
             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 # Start the game or transition to the next screen
