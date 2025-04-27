@@ -12,6 +12,9 @@ from starting_game import *
 from input_player1 import *
 from input_player2 import *
 from p1_vs_p2 import *
+from blocks_class import *
+from blocks_info import *
+
 
                           ######## main file ###########
                           
@@ -36,6 +39,36 @@ pygame.init()
 # Full screen setup
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 screen_width, screen_height = screen.get_size()
+
+#block images for different health ranges
+# Wood block images
+wood_images = {
+    range(2, 31): "images\wood__(30_0).png",
+    range(32, 71): "images\wood__(70_30).png",
+    range(72, 101): "images\wood__(100_70).png"
+}
+
+# Stone block images
+stone_images = {
+    range(2, 31): "images\stone__(30_0).png",
+    range(32, 71): "images\stone__(70_30).png",
+    range(72, 101): "images\stone__(100_70).png"
+}
+
+# Ice block images
+ice_images = {
+    range(2, 31): "images\ice__(30_0).png",
+    range(32, 71): "images\ice__(70_30).png",
+    range(72, 101): "images\ice__(100_70).png"
+}
+
+# assigning coordinates to blocks
+coordinates = [(50, screen_height - 50), (50, screen_height - 100), (50, screen_height - 150),(50, screen_height - 200),(50, screen_height - 250),(50, screen_height - 300),(screen_width - 100, screen_height -300),(screen_width - 100, screen_height - 250),(screen_width - 100, screen_height - 200),(screen_width - 100, screen_height - 150),(screen_width - 100, screen_height - 100),(screen_width - 100, screen_height - 50)]
+get_block = assign_blocks_to_coordinates(coordinates) #assigning blocks to coordinates
+blocks = list(get_block.values()) #getting blocks from dictionary
+
+
+
 pygame.display.set_caption("Angry Birds(Multiplayer)")
 
 # Load images

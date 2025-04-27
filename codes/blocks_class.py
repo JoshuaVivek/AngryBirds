@@ -39,24 +39,3 @@ class Block:
         :return: True if the block's health is 0, False otherwise.
         """
         return self.current_health == 0
-
-
-# Example usage
-if __name__ == "__main__":
-    # Define images for different health ranges
-    wood_images = {
-        range(0, 30): "wood_broken.png",
-        range(30, 70): "wood_damaged.png",
-        range(70, 100): "wood_normal.png"
-    }
-
-    # Create a wood block
-    wood_block = Block(block_type="wood", max_health=100, images=wood_images)
-
-    # Simulate damage and print the corresponding image
-    print("Initial image:", wood_block.get_image())
-    wood_block.take_damage(30)
-    print("After 30 damage:", wood_block.get_image())
-    wood_block.take_damage(50)
-    print("After 50 more damage:", wood_block.get_image())
-    print("Is block destroyed?", wood_block.is_destroyed())
