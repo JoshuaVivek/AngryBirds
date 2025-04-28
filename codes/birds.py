@@ -68,7 +68,7 @@ class AngryBird:
         return: Velocity of the bird
         """
         return self.velocity
-    def create_random_bird(x, y):
+def create_random_bird(x, y):
         """
         Create a random AngryBird at the specified position.
 

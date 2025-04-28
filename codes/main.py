@@ -66,8 +66,8 @@ ice_images = {
 }
 
 # assigning coordinates to blocks
-coordinates = [(50, screen_height - 50), (50, screen_height - 100), (50, screen_height - 150),(50, screen_height - 200),(50, screen_height - 250),(50, screen_height - 300),(screen_width - 100, screen_height -300),(screen_width - 100, screen_height - 250),(screen_width - 100, screen_height - 200),(screen_width - 100, screen_height - 150),(screen_width - 100, screen_height - 100),(screen_width - 100, screen_height - 50)]
-block_type = assign_blocks_to_coordinates(coordinates) #assigning blocks to coordinates
+block_coordinates = [(50, screen_height - 50), (50, screen_height - 100), (50, screen_height - 150),(50, screen_height - 200),(50, screen_height - 250),(50, screen_height - 300),(screen_width - 100, screen_height -300),(screen_width - 100, screen_height - 250),(screen_width - 100, screen_height - 200),(screen_width - 100, screen_height - 150),(screen_width - 100, screen_height - 100),(screen_width - 100, screen_height - 50)]
+block_type = assign_blocks_to_coordinates(block_coordinates) #assigning blocks to coordinates
 blocks = list(block_type.values()) #getting blocks from dictionary
 
 
@@ -86,8 +86,14 @@ for block_type in blocks:
     block.append(block1)
 
                ##########birds##########
-             
 
+# giving coordinates to birds
+bird_cooordinates = [(150,screen_height - 50),(200,screen_height - 50),(250,screen_height - 50), (screen_width - 300,screen_height - 50), (screen_width - 250,screen_height - 50),(screen_width - 200,screen_height - 50)] #coordinates of birds
+#assigning random birds to coordinates
+birds = []
+for coord in bird_cooordinates:
+    bird = create_random_bird(coord[0], coord[1]) #creating random birds at coordinates
+    birds.append(bird)
 
 
 pygame.display.set_caption("Angry Birds(Multiplayer)")
@@ -127,13 +133,15 @@ while running:
     # Loop through each block and its coordinate
     for i in range(len(blocks)):
         current_block = block[i]  # Get the block
-        x, y = coordinates[i]  # Get the corresponding coordinate
+        x, y = block_coordinates[i]  # Get the corresponding coordinate
         
         image_path = current_block.get_image()  # Get the image path for the block
         block_image = pygame.image.load(image_path).convert_alpha()  # Load the image
         
         # Draw the block image at the (x, y) position
         screen.blit(block_image, (x, y))
+    for bird in birds:
+        screen.blit(bird.image, (bird.x, bird.y))
         
     # Update display
     pygame.display.flip()
