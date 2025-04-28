@@ -46,6 +46,7 @@ screen_width, screen_height = screen.get_size()
 #block images for different health ranges
 # Wood block images
 wood_images = {
+    range(0,1): "None",
     range(1, 31): "images\wood__(30_0).png",
     range(32, 71): "images\wood__(70_30).png",
     range(72, 101): "images\wood__(100_70).png"
@@ -53,6 +54,7 @@ wood_images = {
 
 # Stone block images
 stone_images = {
+    range(0,1): "None",
     range(1, 31): "images\stone__(30_0).png",
     range(32, 71): "images\stone__(70_30).png",
     range(72, 101): "images\stone__(100_70).png"
@@ -60,6 +62,7 @@ stone_images = {
 
 # Ice block images
 ice_images = {
+    range(0,1): "None",
     range(1, 31): "images\ice__(30_0).png",
     range(32, 71): "images\ice__(70_30).png",
     range(72, 101): "images\ice__(100_70).png"
@@ -95,6 +98,9 @@ for coord in bird_cooordinates:
     bird = create_random_bird(coord[0], coord[1]) #creating random birds at coordinates
     birds.append(bird)
     
+#creating bird_left and bird_right for player1 and player2 respectively
+bird_left = AngryBird(bird_type="Red", x=150, y=screen_height - 50, velocity=0, image="None", damage_multiplier=1.0) #creating bird for player1
+bird_right = AngryBird(bird_type="Red", x=screen_width - 400, y=screen_height - 50, velocity=0, image="None", damage_multiplier=1.0) #creating bird for player2
 
 #displaying the game screen name
 pygame.display.set_caption("Angry Birds(Multiplayer)")
@@ -116,6 +122,9 @@ sling_image2 = pygame.transform.scale(sling_image2, (sling_width, sling_height))
 sling_left_pos = (243, screen_height - sling_height - 100)
 sling_right_pos = (screen_width - sling_width - 228, screen_height - sling_height - 100)
 
+#assigning player who is playing first
+current_player = 1 #player1 is playing first
+
 # Game loop
 clock = pygame.time.Clock()
 running = True
@@ -123,6 +132,11 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_q):
             running = False
+        if current_player == 1:
+            birds, bird_left, bird_right, current_player = handle_bird_selection(event, birds, sling_left_pos, sling_right_pos, current_player, bird_left, bird_right, screen_height,screen_width)
+        if current_player == 2:
+            birds, bird_left, bird_right, current_player = handle_bird_release(event, birds, sling_left_pos, sling_right_pos, current_player, bird_left, bird_right, screen_height,screen_width)
+
 
     # Draw background (static)
     screen.blit(game_background, (0, 0))
@@ -137,13 +151,21 @@ while running:
         x, y = block_coordinates[i]  # Get the corresponding coordinate
         
         image_path = current_block.get_image()  # Get the image path for the block
-        block_image = pygame.image.load(image_path).convert_alpha()  # Load the image
+        if image_path != "None":
+            block_image = pygame.image.load(image_path).convert_alpha()  # Load the image
         
         # Draw the block image at the (x, y) position
         screen.blit(block_image, (x, y))
-    for bird in birds:
-        screen.blit(bird.image, (bird.x, bird.y))
         
+    #for each bird in birds, check if the image is not "None" and then draw it
+    for bird in birds:
+        if bird.get_image() != "None":
+            screen.blit(bird.image, (bird.x, bird.y))
+    if bird_left.get_image() != "None":
+        screen.blit(bird_left.image, (bird_left.x, bird_left.y))
+    if bird_right.get_image() != "None":
+        screen.blit(bird_right.image, (bird_right.x, bird_right.y))
+    
     # Update display
     pygame.display.flip()
     clock.tick(60)
