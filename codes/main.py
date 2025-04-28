@@ -81,7 +81,7 @@ block = []
 # Iterate over the list and create Block objects
 for block_type in blocks:
     if block_type == "wood":
-        block1 = Block(block_type="wood_block", max_health=100, images=wood_images)
+        block1 = Block(block_type="wood_block", max_health = 100, images=wood_images)
     elif block_type == "stone":
         block1 = Block(block_type="stone_block", max_health=100, images=stone_images)
     elif block_type == "ice":
@@ -160,11 +160,10 @@ while running:
         x, y = block_coordinates[i]  # Get the corresponding coordinate
         
         image_path = current_block.get_image()  # Get the image path for the block
-        if image_path != "None":
+        if image_path is not None and image_path != "None":
             block_image = pygame.image.load(image_path).convert_alpha()  # Load the image
-        
-        # Draw the block image at the (x, y) position
-        screen.blit(block_image, (x, y))
+            # Draw the block image at the (x, y) position
+            screen.blit(block_image, (x, y))
         
     #for each bird in birds, check if the image is not "None" and then draw it
     for bird in birds:
