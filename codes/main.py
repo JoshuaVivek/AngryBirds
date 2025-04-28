@@ -14,6 +14,7 @@ from input_player2 import *
 from p1_vs_p2 import *
 from blocks_class import *
 from blocks_info import *
+from birds import *
 
 
                           ######## main file ###########
@@ -40,6 +41,8 @@ pygame.init()
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 screen_width, screen_height = screen.get_size()
 
+                    ##########blocks##########
+                    
 #block images for different health ranges
 # Wood block images
 wood_images = {
@@ -81,6 +84,11 @@ for block_type in blocks:
         block1 = Block(block_type="ice_block", max_health=100, images=ice_images)
     
     block.append(block1)
+
+               ##########birds##########
+             
+
+
 
 pygame.display.set_caption("Angry Birds(Multiplayer)")
 
