@@ -88,14 +88,15 @@ for block_type in blocks:
                ##########birds##########
 
 # giving coordinates to birds
-bird_cooordinates = [(150,screen_height - 50),(200,screen_height - 50),(250,screen_height - 50), (screen_width - 300,screen_height - 50), (screen_width - 250,screen_height - 50),(screen_width - 200,screen_height - 50)] #coordinates of birds
+bird_cooordinates = [(150,screen_height - 50),(250,screen_height - 50),(350,screen_height - 50), (screen_width - 400,screen_height - 50), (screen_width - 300,screen_height - 50),(screen_width - 200,screen_height - 50)] #coordinates of birds
 #assigning random birds to coordinates
 birds = []
 for coord in bird_cooordinates:
     bird = create_random_bird(coord[0], coord[1]) #creating random birds at coordinates
     birds.append(bird)
+    
 
-
+#displaying the game screen name
 pygame.display.set_caption("Angry Birds(Multiplayer)")
 
 # Load images
