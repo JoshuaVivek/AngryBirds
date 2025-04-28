@@ -2,7 +2,7 @@ import random
 import pygame
 
 class AngryBird:
-    def __init__(self, bird_type, x, y, velocity, image, damage_multiplier):
+    def __init__(self, bird_type, x, y, velocity, image, damage_multiplier,selected=False):
         """
         Initialize an AngryBird.
 
@@ -107,7 +107,7 @@ def create_random_bird(x, y):
         velocity = 0  # Initial velocity is 0
         image = bird_images[bird_type]
         damage_multiplier = bird_types[bird_type]["damage_multiplier"]
-        return AngryBird(bird_type, x, y, velocity, image, damage_multiplier)
+        return AngryBird(bird_type, x, y, velocity, image, damage_multiplier, selected=False)
 
 def handle_bird_selection(event, birds, sling_left_pos, sling_right_pos, current_player, bird_left, bird_right,screen_height,screen_width):
     if event.type == pygame.MOUSEBUTTONDOWN:
@@ -126,30 +126,18 @@ def handle_bird_selection(event, birds, sling_left_pos, sling_right_pos, current
                     selected_bird_index = i
                     # Move the selected bird to the appropriate sling
                     if current_player == 1:
-                         bird.update_position(sling_left_pos[0] + 10, sling_left_pos[1] + 30)
-                         bird_left = bird #update the bird_left
-                         current_player = 2 #switch player
+                        x, y = bird.get_position()
+                        bird.update_position(245, screen_height - 205)  # Move to player 1's sling position
+                        bird_left = bird #update the bird_left
+                        birds[i] = create_random_bird(x, y) #creating random bird at the coordinates
+                        current_player = 2 #switch player
                     else:
-                         bird.update_position(sling_right_pos[0] + 10, sling_right_pos[1] + 30)
-                         bird_right = bird #update the bird_right
-                         current_player = 1 #switch player
+                        x, y = bird.get_position()
+                        bird.update_position(screen_width - 280, screen_height - 200)  # Move to player 2's sling position
+                        bird_right = bird #update the bird_right
+                        birds[i] = create_random_bird(x, y) #creating random bird at the coordinates
+                        current_player = 1 #switch player
                     bird.update_velocity(0)
                     break  # Only one bird can be selected per click
 
     return birds, bird_left, bird_right,current_player
-
-def handle_bird_release(event, birds, bird_left, bird_right,current_player):
-    """Handles the bird release after selection."""
-    if event.type == pygame.MOUSEBUTTONUP:
-        for i, bird in enumerate(birds):
-            if bird.selected:
-                bird.deselect() # Deselect the bird.
-                original_x, original_y = bird.x, bird.y
-                birds[i] = create_random_bird(original_x, original_y)
-                if current_player == 1:
-                    bird_left = None
-                else:
-                    bird_right = None
-                current_player = 3 - current_player #switch player
-                break
-    return birds, bird_left, bird_right, current_player

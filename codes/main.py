@@ -17,6 +17,7 @@ from blocks_info import *
 from birds import *
 
 
+
                           ######## main file ###########
                           
 start_game() #used to start game and ask player details and take you into game
@@ -99,8 +100,8 @@ for coord in bird_cooordinates:
     birds.append(bird)
     
 #creating bird_left and bird_right for player1 and player2 respectively
-bird_left = AngryBird(bird_type="Red", x=150, y=screen_height - 50, velocity=0, image="None", damage_multiplier=1.0) #creating bird for player1
-bird_right = AngryBird(bird_type="Red", x=screen_width - 400, y=screen_height - 50, velocity=0, image="None", damage_multiplier=1.0) #creating bird for player2
+bird_left = AngryBird(bird_type="Red", x=245, y=screen_height - 205, velocity=0, image="None", damage_multiplier=1.0,selected = False) #creating bird for player1
+bird_right = AngryBird(bird_type="Red", x=screen_width - 280, y=screen_height - 200, velocity=0, image="None", damage_multiplier=1.0, selected = False) #creating bird for player2
 
 #displaying the game screen name
 pygame.display.set_caption("Angry Birds(Multiplayer)")
@@ -132,10 +133,9 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_q):
             running = False
-        if current_player == 1:
-            birds, bird_left, bird_right, current_player = handle_bird_selection(event, birds, sling_left_pos, sling_right_pos, current_player, bird_left, bird_right, screen_height,screen_width)
-        if current_player == 2:
-            birds, bird_left, bird_right, current_player = handle_bird_release(event, birds, sling_left_pos, sling_right_pos, current_player, bird_left, bird_right, screen_height,screen_width)
+        
+        birds, bird_left, bird_right, current_player = handle_bird_selection(event, birds, sling_left_pos, sling_right_pos, current_player, bird_left, bird_right, screen_height,screen_width)
+
 
 
     # Draw background (static)
@@ -159,11 +159,10 @@ while running:
         
     #for each bird in birds, check if the image is not "None" and then draw it
     for bird in birds:
-        if bird.get_image() != "None":
             screen.blit(bird.image, (bird.x, bird.y))
-    if bird_left.get_image() != "None":
+    if bird_left is not None and bird_left.get_image() != "None":
         screen.blit(bird_left.image, (bird_left.x, bird_left.y))
-    if bird_right.get_image() != "None":
+    if bird_right is not None and bird_right.get_image() != "None":
         screen.blit(bird_right.image, (bird_right.x, bird_right.y))
     
     # Update display
