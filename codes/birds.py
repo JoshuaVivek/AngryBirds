@@ -3,22 +3,18 @@ import pygame
 
 class AngryBird:
     def __init__(self, bird_type, x, y, velocity, image, damage_multiplier,selected=False):
-        """
-        Initialize an AngryBird.
 
-        bird_type: Type of the bird (e.g., "Red", "Blue", "Chuck", "Bomb")
-        x: Initial x-coordinate position of the bird
-        y: Initial y-coordinate position of the bird
-        velocity: Initial velocity of the bird
-        image: Image representation of the bird
-        damage_multiplier: Damage multiplier specific to the bird type
-        """
         self.bird_type = bird_type
         self.x = x
         self.y = y
         self.velocity = [0, 0]  # Initial velocity is a tuple (vx, vy)
         self.image = image
         self.damage_multiplier = damage_multiplier
+        self.dragging = False
+        self.launched = False
+        self.gravity = 150  
+        self.restitution = 0.2  # coefficient of restitution
+        self.min_velocity = 30
 
     def calculate_damage(self):
         """
@@ -76,6 +72,24 @@ class AngryBird:
     def deselect(self):
         """Marks the bird as deselected."""
         self.selected = False
+        
+    def apply_physics(self, dt, screen_height):
+        if self.launched:
+            gravity = 150  # pixels per second squared (adjustable)
+            self.vy += gravity * dt  # Gravity affects y-velocity
+            self.x += self.vx * dt
+            self.y += self.vy * dt
+
+            # Bounce off the ground
+            if self.y >= screen_height - self.image.get_height():
+                self.y = screen_height - self.image.get_height()
+                self.vy = -self.vy * 0.2  # Lose some energy on bounce
+                self.vx *= 0.7  # Slow down horizontally
+                if abs(self.vy) < 50:  # Stop bouncing when almost still
+                    self.vy = 0 
+                    self.launched = False  # Stop the bird when it lands
+
+
         
 def create_random_bird(x, y):
         """
@@ -141,3 +155,4 @@ def handle_bird_selection(event, birds, sling_left_pos, sling_right_pos, current
                     break  # Only one bird can be selected per click
 
     return birds, bird_left, bird_right,current_player
+

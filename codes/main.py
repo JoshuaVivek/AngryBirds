@@ -16,6 +16,8 @@ from blocks_class import *
 from blocks_info import *
 from birds import *
 
+velocity_threshold = 300 #minimum velocity of bird to be launched
+
 
 
                           ######## main file ###########
@@ -126,6 +128,34 @@ sling_image2 = pygame.transform.scale(sling_image2, (sling_width, sling_height))
 sling_left_pos = (243, screen_height - sling_height - 100)
 sling_right_pos = (screen_width - sling_width - 228, screen_height - sling_height - 100)
 
+# Sling anchor points
+sling_left_anchor1 = (sling_left_pos[0] + 15, sling_left_pos[1] + 20)
+sling_left_anchor2 = (sling_left_pos[0] + 40, sling_left_pos[1] + 20)
+
+sling_right_anchor1 = (sling_right_pos[0] + 5 , sling_right_pos[1] + 15)
+sling_right_anchor2 = (sling_right_pos[0] + 30, sling_right_pos[1] + 20)
+
+#launching the bird
+def launch_bird(bird, sling_pos):
+    mouse_x, mouse_y = pygame.mouse.get_pos()
+    sling_x, sling_y = sling_pos
+
+    # Calculate drag vector
+    dx = sling_x - mouse_x
+    dy = sling_y - mouse_y
+
+    # Limit maximum drag distance
+    max_drag_distance = 150
+    drag_distance = (dx**2 + dy**2)**0.5
+    if drag_distance > max_drag_distance:
+        scale = max_drag_distance / drag_distance
+        dx *= scale
+        dy *= scale
+
+    # Launch the bird
+    bird.velocity = [dx * 3, dy * 3]  # Multiplied for speed tuning
+    bird.launched = True
+
 
 
 
@@ -141,9 +171,86 @@ while running:
             running = False
         
         birds, bird_left, bird_right, current_player = handle_bird_selection(event, birds, sling_left_pos, sling_right_pos, current_player, bird_left, bird_right, screen_height,screen_width)
+        
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = event.pos
+            # Allow dragging if clicked on bird_left
+            if bird_left and bird_left.get_image() != "None":
+                bird_rect = bird_left.image.get_rect(topleft=(bird_left.x, bird_left.y))
+                if bird_rect.collidepoint(mouse_pos):
+                    bird_left.dragging = True
+
+            # Allow dragging if clicked on bird_right
+            if bird_right and bird_right.get_image() != "None":
+                bird_rect = bird_right.image.get_rect(topleft=(bird_right.x, bird_right.y))
+                if bird_rect.collidepoint(mouse_pos):
+                    bird_right.dragging = True
 
         
+        if event.type == pygame.MOUSEBUTTONUP:
+            if bird_left.dragging:
+                bird_left.dragging = False
+                bird_left.launched = True
+                sling_x, sling_y = sling_left_pos
+                pull_x = sling_x - bird_left.x
+                pull_y = sling_y - bird_left.y
+                bird_left.vx = pull_x * 2
+                bird_left.vy = pull_y * 2
+
+            if bird_right.dragging:
+                bird_right.dragging = False
+                bird_right.launched = True
+                sling_x, sling_y = sling_right_pos
+                pull_x = sling_x - bird_right.x
+                pull_y = sling_y - bird_right.y
+                bird_right.vx = pull_x * 2
+                bird_right.vy = pull_y * 2
+
+
+    # Apply physics to launched birds
     dt = clock.get_time() / 1000  # Convert milliseconds to seconds
+    
+    if bird_left and bird_left.launched:
+        bird_left.apply_physics(dt, screen_height)
+    if bird_right and bird_right.launched:
+        bird_right.apply_physics(dt, screen_height)
+        
+    if bird_left and bird_left.launched:
+        if abs(bird_left.vx) < 30 and abs(bird_left.vy) < 30:
+            bird_left = None  # Bird is removed when almost stopped
+
+    if bird_right and bird_right.launched:
+        if abs(bird_right.vx) < 30 and abs(bird_right.vy) < 30:
+            bird_right = None  # Bird is removed when almost stopped
+        
+                
+    # If dragging, update bird position with mouse
+    if bird_left and bird_left.dragging:
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        sling_x, sling_y = sling_left_pos
+        dx = mouse_x - sling_x
+        dy = mouse_y - sling_y
+        distance = math.hypot(dx, dy)
+        max_distance = 150  # or whatever limit you want
+        if distance > max_distance:
+            dx = dx * max_distance / distance
+            dy = dy * max_distance / distance
+        bird_left.x = sling_x + dx
+        bird_left.y = sling_y + dy
+
+    if bird_right and bird_right.dragging:
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        sling_x, sling_y = sling_right_pos
+        dx = mouse_x - sling_x
+        dy = mouse_y - sling_y
+        distance = math.hypot(dx, dy)
+        max_distance = 150
+        if distance > max_distance:
+            dx = dx * max_distance / distance
+            dy = dy * max_distance / distance
+        bird_right.x = sling_x + dx
+        bird_right.y = sling_y + dy
+
         
 
     # Draw background (static)
@@ -153,6 +260,14 @@ while running:
     screen.blit(sling_image1, sling_left_pos)
     screen.blit(sling_image2, sling_right_pos)
     
+    if bird_left and bird_left.dragging:
+        pygame.draw.line(screen, (0, 0, 0), sling_left_anchor1, (bird_left.x +25, bird_left.y + 25), 3)
+        pygame.draw.line(screen, (0, 0, 0), sling_left_anchor2, (bird_left.x + 25, bird_left.y + 25), 3)
+
+    if bird_right and bird_right.dragging:
+        pygame.draw.line(screen, (0, 0, 0), sling_right_anchor1, (bird_right.x + 25, bird_right.y + 25), 3)
+        pygame.draw.line(screen, (0, 0, 0), sling_right_anchor2, (bird_right.x + 25, bird_right.y + 25), 3)
+
     
     # Loop through each block and its coordinate
     for i in range(len(blocks)):

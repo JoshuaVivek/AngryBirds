@@ -1,12 +1,3 @@
-
-# Example coordinates (12 positions)
-coordinates = [
-    (0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0),
-    (5, 1), (4, 1), (3, 1), (2, 1), (1, 1), (0, 1)
-]
-
-# Generate the block assignments for the coordinates
-block_assignments = assign_blocks_to_coordinates(coordinates)
-
-# Print the resulting block assignments
-print("Block assignments:", block_assignments)
+    block_image = pygame.image.load(image_path).convert_alpha()  # Load the image
+        # Draw the block image at the (x, y) position
+        screen.blit(block_image, (x, y))
