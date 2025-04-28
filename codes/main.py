@@ -110,8 +110,11 @@ pygame.display.set_caption("Angry Birds(Multiplayer)")
 game_background = pygame.image.load("images\game_background.png").convert()
 game_background = pygame.transform.scale(game_background, (screen_width, screen_height))
 
+    ###########slings###########
+
 sling_image1 = pygame.image.load("images\sling_player1.png").convert_alpha()
 sling_image2 = pygame.image.load("images\sling_player2.png").convert_alpha()
+
 
 sling_width = 50
 sling_height = 100
@@ -122,6 +125,9 @@ sling_image2 = pygame.transform.scale(sling_image2, (sling_width, sling_height))
 # Sling positions
 sling_left_pos = (243, screen_height - sling_height - 100)
 sling_right_pos = (screen_width - sling_width - 228, screen_height - sling_height - 100)
+
+
+
 
 #assigning player who is playing first
 current_player = 1 #player1 is playing first
@@ -136,7 +142,9 @@ while running:
         
         birds, bird_left, bird_right, current_player = handle_bird_selection(event, birds, sling_left_pos, sling_right_pos, current_player, bird_left, bird_right, screen_height,screen_width)
 
-
+        
+    dt = clock.get_time() / 1000  # Convert milliseconds to seconds
+        
 
     # Draw background (static)
     screen.blit(game_background, (0, 0))
@@ -144,6 +152,7 @@ while running:
     # Draw slings
     screen.blit(sling_image1, sling_left_pos)
     screen.blit(sling_image2, sling_right_pos)
+    
     
     # Loop through each block and its coordinate
     for i in range(len(blocks)):

@@ -16,7 +16,7 @@ class AngryBird:
         self.bird_type = bird_type
         self.x = x
         self.y = y
-        self.velocity = velocity
+        self.velocity = [0, 0]  # Initial velocity is a tuple (vx, vy)
         self.image = image
         self.damage_multiplier = damage_multiplier
 
@@ -25,7 +25,7 @@ class AngryBird:
         Calculate the damage dealt by the bird based on its velocity.
 
         """
-        return self.velocity * self.damage_multiplier
+        return self.damage_multiplier * (self.velocity[0] ** 2 + self.velocity[1] ** 2) ** 0.5
 
     def update_position(self, new_x, new_y):
         """
