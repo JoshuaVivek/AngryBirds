@@ -153,7 +153,7 @@ def launch_bird(bird, sling_pos):
         dy *= scale
 
     # Launch the bird
-    bird.velocity = [dx * 3, dy * 3]  # Multiplied for speed tuning
+    bird.velocity = [dx * 500, dy * 500]  # Multiplied for speed tuning
     bird.launched = True
 
 
@@ -161,17 +161,19 @@ def launch_bird(bird, sling_pos):
 
 #assigning player who is playing first
 current_player = 1 #player1 is playing first
+bird_active = False #bird is not active at the start
 
 # Game loop
 clock = pygame.time.Clock()
 running = True
+elapsed_time = 0 #time elapsed for the bird to be launched
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_q):
             running = False
-        
-        birds, bird_left, bird_right, current_player = handle_bird_selection(event, birds, sling_left_pos, sling_right_pos, current_player, bird_left, bird_right, screen_height,screen_width)
-        
+
+        birds, bird_left, bird_right, current_player, bird_active = handle_bird_selection(event, birds, sling_left_pos, sling_right_pos, current_player, bird_left, bird_right, screen_height,screen_width,bird_active) #function to handle bird selection and launching
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = event.pos
             # Allow dragging if clicked on bird_left
@@ -186,44 +188,67 @@ while running:
                 if bird_rect.collidepoint(mouse_pos):
                     bird_right.dragging = True
 
-        
+
         if event.type == pygame.MOUSEBUTTONUP:
-            if bird_left.dragging:
+            if bird_left is not None and bird_left.dragging:
                 bird_left.dragging = False
                 bird_left.launched = True
+                bird_left.launch() # Call the launch method to set launch_time
                 sling_x, sling_y = sling_left_pos
                 pull_x = sling_x - bird_left.x
                 pull_y = sling_y - bird_left.y
-                bird_left.vx = pull_x * 2
-                bird_left.vy = pull_y * 2
+                bird_left.vx = pull_x * 5
+                bird_left.vy = pull_y * 5
+                bird_active = True # Bird has been launched
 
-            if bird_right.dragging:
+            elif bird_right is not None and bird_right.dragging:
                 bird_right.dragging = False
                 bird_right.launched = True
+                bird_right.launch() # Call the launch method to set launch_time
                 sling_x, sling_y = sling_right_pos
                 pull_x = sling_x - bird_right.x
                 pull_y = sling_y - bird_right.y
-                bird_right.vx = pull_x * 2
-                bird_right.vy = pull_y * 2
+                bird_right.vx = pull_x * 5
+                bird_right.vy = pull_y * 5
+                bird_active = True # Bird has been launched
 
 
     # Apply physics to launched birds
     dt = clock.get_time() / 1000  # Convert milliseconds to seconds
-    
+
     if bird_left and bird_left.launched:
         bird_left.apply_physics(dt, screen_height)
     if bird_right and bird_right.launched:
         bird_right.apply_physics(dt, screen_height)
-        
-    if bird_left and bird_left.launched:
-        if abs(bird_left.vx) < 30 and abs(bird_left.vy) < 30:
-            bird_left = None  # Bird is removed when almost stopped
 
-    if bird_right and bird_right.launched:
-        if abs(bird_right.vx) < 30 and abs(bird_right.vy) < 30:
-            bird_right = None  # Bird is removed when almost stopped
-        
-                
+       # Time limit for the bird's flight
+       # Time limit for the bird's flight
+    TIME_LIMIT = 5
+
+    # Handle bird timeout and player switching
+    if bird_left and bird_left.launched and bird_left.launch_time is not None:
+        elapsed_time_left = time.time() - bird_left.launch_time
+        if elapsed_time_left > TIME_LIMIT:
+            bird_left = None
+            bird_active = False
+            current_player = 2
+            elapsed_time_left = 0  # Reset for the next bird
+
+    elif bird_right and bird_right.launched and bird_right.launch_time is not None:
+        elapsed_time_right = time.time() - bird_right.launch_time
+        if elapsed_time_right > TIME_LIMIT:
+            bird_right = None
+            bird_active = False
+            current_player = 1
+            elapsed_time_right = 0  # Reset for the next bird
+
+    elif not bird_left and not bird_right:
+        bird_active = False # No bird is currently active
+
+    elif not bird_active:
+        # Ready for the next player to select a bird
+        pass
+
     # If dragging, update bird position with mouse
     if bird_left and bird_left.dragging:
         mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -251,15 +276,14 @@ while running:
         bird_right.x = sling_x + dx
         bird_right.y = sling_y + dy
 
-        
 
     # Draw background (static)
     screen.blit(game_background, (0, 0))
-    
+
     # Draw slings
     screen.blit(sling_image1, sling_left_pos)
     screen.blit(sling_image2, sling_right_pos)
-    
+
     if bird_left and bird_left.dragging:
         pygame.draw.line(screen, (0, 0, 0), sling_left_anchor1, (bird_left.x +25, bird_left.y + 25), 3)
         pygame.draw.line(screen, (0, 0, 0), sling_left_anchor2, (bird_left.x + 25, bird_left.y + 25), 3)
@@ -268,18 +292,18 @@ while running:
         pygame.draw.line(screen, (0, 0, 0), sling_right_anchor1, (bird_right.x + 25, bird_right.y + 25), 3)
         pygame.draw.line(screen, (0, 0, 0), sling_right_anchor2, (bird_right.x + 25, bird_right.y + 25), 3)
 
-    
+
     # Loop through each block and its coordinate
     for i in range(len(blocks)):
         current_block = block[i]  # Get the block
         x, y = block_coordinates[i]  # Get the corresponding coordinate
-        
+
         image_path = current_block.get_image()  # Get the image path for the block
         if image_path is not None and image_path != "None":
             block_image = pygame.image.load(image_path).convert_alpha()  # Load the image
             # Draw the block image at the (x, y) position
             screen.blit(block_image, (x, y))
-        
+
     #for each bird in birds, check if the image is not "None" and then draw it
     for bird in birds:
             screen.blit(bird.image, (bird.x, bird.y))
@@ -287,7 +311,7 @@ while running:
         screen.blit(bird_left.image, (bird_left.x, bird_left.y))
     if bird_right is not None and bird_right.get_image() != "None":
         screen.blit(bird_right.image, (bird_right.x, bird_right.y))
-    
+
     # Update display
     pygame.display.flip()
     clock.tick(60)

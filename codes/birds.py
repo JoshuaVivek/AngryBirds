@@ -1,5 +1,6 @@
 import random
 import pygame
+import time
 
 class AngryBird:
     def __init__(self, bird_type, x, y, velocity, image, damage_multiplier,selected=False):
@@ -12,9 +13,13 @@ class AngryBird:
         self.damage_multiplier = damage_multiplier
         self.dragging = False
         self.launched = False
-        self.gravity = 150  
-        self.restitution = 0.2  # coefficient of restitution
-        self.min_velocity = 30
+        self.gravity = 400  
+        self.restitution = 0.5  # coefficient of restitution
+        self.min_velocity = 500  # Minimum velocity to be considered launched
+        self.vx = self.velocity[0]  # Initial horizontal velocity
+        self.vy = self.velocity[1]
+        self.launch_time = None  # Add a timestamp for when the bird is launched
+
 
     def calculate_damage(self):
         """
@@ -75,7 +80,7 @@ class AngryBird:
         
     def apply_physics(self, dt, screen_height):
         if self.launched:
-            gravity = 150  # pixels per second squared (adjustable)
+            gravity = 400  # pixels per second squared (adjustable)
             self.vy += gravity * dt  # Gravity affects y-velocity
             self.x += self.vx * dt
             self.y += self.vy * dt
@@ -83,11 +88,14 @@ class AngryBird:
             # Bounce off the ground
             if self.y >= screen_height - self.image.get_height():
                 self.y = screen_height - self.image.get_height()
-                self.vy = -self.vy * 0.2  # Lose some energy on bounce
+                self.vy = -self.vy * 0.5  # Lose some energy on bounce
                 self.vx *= 0.7  # Slow down horizontally
                 if abs(self.vy) < 50:  # Stop bouncing when almost still
                     self.vy = 0 
-                    self.launched = False  # Stop the bird when it lands
+    def launch(self):
+        """Launch the bird and record the launch time."""
+        self.launched = True
+        self.launch_time = time.time()  # Record the current time when the bird is launched
 
 
         
@@ -123,7 +131,9 @@ def create_random_bird(x, y):
         damage_multiplier = bird_types[bird_type]["damage_multiplier"]
         return AngryBird(bird_type, x, y, velocity, image, damage_multiplier, selected=False)
 
-def handle_bird_selection(event, birds, sling_left_pos, sling_right_pos, current_player, bird_left, bird_right,screen_height,screen_width):
+def handle_bird_selection(event, birds, sling_left_pos, sling_right_pos, current_player, bird_left, bird_right,screen_height,screen_width,bird_active):
+    if bird_active:
+        return birds, bird_left, bird_right, current_player, bird_active  # Do not allow new selections if a bird is already active
     if event.type == pygame.MOUSEBUTTONDOWN:
         mouse_pos = event.pos
         for i, bird in enumerate(birds):
@@ -152,7 +162,8 @@ def handle_bird_selection(event, birds, sling_left_pos, sling_right_pos, current
                         birds[i] = create_random_bird(x, y) #creating random bird at the coordinates
                         current_player = 1 #switch player
                     bird.update_velocity(0)
+                    bird_active = True  # Mark the bird as active
                     break  # Only one bird can be selected per click
 
-    return birds, bird_left, bird_right,current_player
+    return birds, bird_left, bird_right,current_player, bird_active  # Return the updated birds list, selected bird, and current player
 
