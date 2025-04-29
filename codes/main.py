@@ -165,30 +165,50 @@ def check_collision(bird, blocks, block_coordinates, current_player):
     global player1_score, player2_score
 
     bird_rect = bird.image.get_rect(topleft=(bird.x, bird.y))
-
     for i, blk in enumerate(blocks):
         if blk.is_destroyed():
             continue
 
-        # Skip blocks belonging to the current player
+        # Skip blocks belonging to current player
         if (current_player == 1 and i < 6) or (current_player == 2 and i >= 6):
             continue
 
-        block_x, block_y = block_coordinates[i]
-        block_rect = pygame.Rect(block_x, block_y, 50, 50)
+        bx, by = block_coordinates[i]
+        block_rect = pygame.Rect(bx, by, 50, 50)
 
         if bird_rect.colliderect(block_rect):
-            damage = bird.calculate_damage()
-            blk.take_damage(damage)
+            # Compute the intersection rect
+            overlap = bird_rect.clip(block_rect)
 
-            if current_player == 1:
-                player1_score += int(damage)
+            # Resolve penetration along the smaller axis
+            if overlap.width < overlap.height:
+                # Horizontal collision
+                if bird_rect.centerx < block_rect.centerx:
+                    bird.x -= overlap.width
+                else:
+                    bird.x += overlap.width
+                bird.vx *= -bird.restitution
             else:
-                player2_score += int(damage)
+                # Vertical collision
+                if bird_rect.centery < block_rect.centery:
+                    bird.y -= overlap.height
+                else:
+                    bird.y += overlap.height
+                bird.vy *= -bird.restitution
 
-            bird.vx *= -bird.restitution
-            bird.vy *= -bird.restitution
+            # Update the bird’s stored velocity vector
+            bird.velocity = [bird.vx, bird.vy]
+
+            # Damage & scoring
+            damage = int(bird.calculate_damage())
+            blk.take_damage(damage)
+            if current_player == 1:
+                player1_score += damage
+            else:
+                player2_score += damage
+
             return
+
         
 def check_win_condition(blocks, player1_score, player2_score):
     """Checks if the winning condition is met."""
