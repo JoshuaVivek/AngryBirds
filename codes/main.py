@@ -161,6 +161,10 @@ def launch_bird(bird, sling_pos):
 current_player = 1 #player1 is playing first
 bird_active = False #bird is not active at the start
 
+#player score
+player1_score = 0 #player1 score
+player2_score = 0 #player2 score
+
 # Initialize font
 pygame.font.init()
 font = pygame.font.Font(None, 48)
@@ -315,9 +319,15 @@ while running:
         screen.blit(bird_right.image, (bird_right.x, bird_right.y))
      
      #display who is playing   
-    player_text = font.render(f"Player {current_player}'s Turn(Wait for other players bird to stop)", True, (173, 216, 230))  # Red color text
-    text_rect = player_text.get_rect(center=(screen_width // 2, 50))  # Centered at top (y=50)
-    screen.blit(player_text, text_rect)
+    player_text = font.render(f"Next to play : Player {current_player}", True, (173, 216, 230))
+    player1_score_text = font.render(f"Score: {player1_score}", True, (173, 216, 230))
+    player2_score_text = font.render(f"Score: {player2_score}", True, (173, 216, 230))
+    text_rect1 = player1_score_text.get_rect(center=(screen_width // 10,  50))  # Centered at bottom (y=screen_height - 50)
+    text_rect2 = player_text.get_rect(center=(screen_width // 2, 50))  # Centered at top (y=50)
+    text_rect3 = player2_score_text.get_rect(center=(screen_width - screen_width // 10, 50))  # Centered at bottom (y=screen_height - 50)
+    screen.blit(player1_score_text, text_rect1)
+    screen.blit(player_text, text_rect2)
+    screen.blit(player2_score_text, text_rect3)
 
     # Update display
     pygame.display.flip()
