@@ -16,8 +16,6 @@ from blocks_class import *
 from blocks_info import *
 from birds import *
 
-velocity_threshold = 300 #minimum velocity of bird to be launched
-
 
 
                           ######## main file ###########
@@ -162,6 +160,10 @@ def launch_bird(bird, sling_pos):
 #assigning player who is playing first
 current_player = 1 #player1 is playing first
 bird_active = False #bird is not active at the start
+
+# Initialize font
+pygame.font.init()
+font = pygame.font.Font(None, 48)
 
 # Game loop
 clock = pygame.time.Clock()
@@ -311,6 +313,11 @@ while running:
         screen.blit(bird_left.image, (bird_left.x, bird_left.y))
     if bird_right is not None and bird_right.get_image() != "None":
         screen.blit(bird_right.image, (bird_right.x, bird_right.y))
+     
+     #display who is playing   
+    player_text = font.render(f"Player {current_player}'s Turn(Wait for other players bird to stop)", True, (173, 216, 230))  # Red color text
+    text_rect = player_text.get_rect(center=(screen_width // 2, 50))  # Centered at top (y=50)
+    screen.blit(player_text, text_rect)
 
     # Update display
     pygame.display.flip()
