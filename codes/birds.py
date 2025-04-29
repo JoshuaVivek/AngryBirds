@@ -13,7 +13,7 @@ class AngryBird:
         self.damage_multiplier = damage_multiplier
         self.dragging = False
         self.launched = False
-        self.gravity = 400  
+        self.gravity = 800  
         self.restitution = 0.5  # coefficient of restitution
         self.min_velocity = 500  # Minimum velocity to be considered launched
         self.vx = self.velocity[0]  # Initial horizontal velocity
@@ -80,7 +80,7 @@ class AngryBird:
         
     def apply_physics(self, dt, screen_height):
         if self.launched:
-            gravity = 400  # pixels per second squared (adjustable)
+            gravity = 800  # pixels per second squared (adjustable)
             self.vy += gravity * dt  # Gravity affects y-velocity
             self.x += self.vx * dt
             self.y += self.vy * dt

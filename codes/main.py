@@ -153,7 +153,7 @@ def launch_bird(bird, sling_pos):
         dy *= scale
 
     # Launch the bird
-    bird.velocity = [dx * 500, dy * 500]  # Multiplied for speed tuning
+    bird.velocity = [dx * 5000, dy * 5000]  # Multiplied for speed tuning
     bird.launched = True
     
 
@@ -241,8 +241,8 @@ while running:
                 sling_x, sling_y = sling_left_pos
                 pull_x = sling_x - bird_left.x
                 pull_y = sling_y - bird_left.y
-                bird_left.vx = pull_x * 5
-                bird_left.vy = pull_y * 5
+                bird_left.vx = pull_x * 8
+                bird_left.vy = pull_y * 8
                 bird_active = True # Bird has been launched
 
             elif bird_right is not None and bird_right.dragging:
@@ -252,8 +252,8 @@ while running:
                 sling_x, sling_y = sling_right_pos
                 pull_x = sling_x - bird_right.x
                 pull_y = sling_y - bird_right.y
-                bird_right.vx = pull_x * 5
-                bird_right.vy = pull_y * 5
+                bird_right.vx = pull_x * 8
+                bird_right.vy = pull_y * 8
                 bird_active = True # Bird has been launched
                 
             if bird_left is not None and bird_left.dragging:
