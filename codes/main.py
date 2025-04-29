@@ -13,7 +13,6 @@ from input_player1 import *
 from input_player2 import *
 from p1_vs_p2 import *
 from blocks_class import *
-from blocks_info import *
 from birds import *
 
 
