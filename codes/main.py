@@ -277,7 +277,7 @@ bird_active = False #bird is not active at the start
 
 # Initialize font
 pygame.font.init()
-font = pygame.font.SysFont("Comic Sans MS", 48)
+font = pygame.font.SysFont("Comic Sans MS", 36)
 
 bird_left_stop_time  = None
 bird_right_stop_time = None
