@@ -258,6 +258,9 @@ bird_active = False #bird is not active at the start
 pygame.font.init()
 font = pygame.font.Font(None, 48)
 
+bird_left_stop_time  = None
+bird_right_stop_time = None
+
 # Game loop
 clock = pygame.time.Clock()
 running = True
@@ -326,32 +329,32 @@ while running:
 
        # Time limit for the bird's flight
        # Time limit for the bird's flight
-    TIME_LIMIT = 5
 
-    # Handle bird timeout and player switching
-    if bird_left and bird_left.launched and bird_left.launch_time is not None:
-        elapsed_time_left = time.time() - bird_left.launch_time
-        if elapsed_time_left > TIME_LIMIT:
+    # ---- bird_left stop logic ----
+    if bird_left and bird_left.launched:
+        speed = math.hypot(bird_left.vx, bird_left.vy)
+        # 1) when speed first drops below threshold, stamp the time
+        if speed < 1 and bird_left_stop_time is None:
+            bird_left_stop_time = time.time()
+        # 2) if we stamped, and 3 seconds have passed, clear the bird
+        if bird_left_stop_time and time.time() - bird_left_stop_time > 1:
             bird_left = None
+            bird_left_stop_time = None
             bird_active = False
-            current_player = 2
-            elapsed_time_left = 0  # Reset for the next bird
+            current_player = 2    # switch turn
 
-    elif bird_right and bird_right.launched and bird_right.launch_time is not None:
-        elapsed_time_right = time.time() - bird_right.launch_time
-        if elapsed_time_right > TIME_LIMIT:
+    # ---- bird_right stop logic ----
+    if bird_right and bird_right.launched:
+        speed = math.hypot(bird_right.vx, bird_right.vy)
+        if speed < 1 and bird_right_stop_time is None:
+            bird_right_stop_time = time.time()
+        if bird_right_stop_time and time.time() - bird_right_stop_time > 1:
             bird_right = None
+            bird_right_stop_time = None
             bird_active = False
-            current_player = 1
-            elapsed_time_right = 0  # Reset for the next bird
+            current_player = 1    # switch turn
 
-    elif not bird_left and not bird_right:
-        bird_active = False # No bird is currently active
-
-    elif not bird_active:
-        # Ready for the next player to select a bird
-        pass
-
+    
     # If dragging, update bird position with mouse
     if bird_left and bird_left.dragging:
         mouse_x, mouse_y = pygame.mouse.get_pos()
