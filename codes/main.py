@@ -47,25 +47,25 @@ screen_width, screen_height = screen.get_size()
 # Wood block images
 wood_images = {
     range(0,1): "None",
-    range(1, 31): "images\wood__(30_0).png",
-    range(31, 71): "images\wood__(70_30).png",
-    range(71, 101): "images\wood__(100_70).png"
+    range(1, 1501): "images\wood__(30_0).png",
+    range(1501, 3501): "images\wood__(70_30).png",
+    range(3501, 5001): "images\wood__(100_70).png"
 }
 
 # Stone block images
 stone_images = {
     range(0,1): "None",
-    range(1, 31): "images\stone__(30_0).png",
-    range(31, 71): "images\stone__(70_30).png",
-    range(71, 101): "images\stone__(100_70).png"
+    range(1, 1501): "images\stone__(30_0).png",
+    range(1501, 3501): "images\stone__(70_30).png",
+    range(3501, 5001): "images\stone__(100_70).png"
 }
 
 # Ice block images
 ice_images = {
     range(0,1): "None",
-    range(1, 31): "images\ice__(30_0).png",
-    range(31, 71): "images\ice__(70_30).png",
-    range(71, 101): "images\ice__(100_70).png"
+    range(1, 1501): "images\ice__(30_0).png",
+    range(1501, 3501): "images\ice__(70_30).png",
+    range(3501, 5001): "images\ice__(100_70).png"
 }
 
 # assigning coordinates to blocks
@@ -80,11 +80,11 @@ block = []
 # Iterate over the list and create Block objects
 for block_type in blocks:
     if block_type == "wood":
-        block1 = Block(block_type="wood_block", max_health = 100, images=wood_images)
+        block1 = Block(block_type="wood_block", max_health = 5000, images=wood_images)
     elif block_type == "stone":
-        block1 = Block(block_type="stone_block", max_health=100, images=stone_images)
+        block1 = Block(block_type="stone_block", max_health = 5000, images=stone_images)
     elif block_type == "ice":
-        block1 = Block(block_type="ice_block", max_health=100, images=ice_images)
+        block1 = Block(block_type="ice_block", max_health = 5000, images=ice_images)
     
     block.append(block1)
 
