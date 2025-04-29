@@ -389,12 +389,12 @@ while running:
     if bird_left and bird_left.dragging:
         pygame.draw.line(screen, (0, 0, 0), sling_left_anchor1, (bird_left.x +25, bird_left.y + 25), 3)
         pygame.draw.line(screen, (0, 0, 0), sling_left_anchor2, (bird_left.x + 25, bird_left.y + 25), 3)
-        draw_trajectory(screen, bird_left, sling_left_pos, screen_height, color=(255,0,0))
+        draw_trajectory(screen, bird_left, sling_left_pos, screen_height, color=(255, 255, 255))
         
     if bird_right and bird_right.dragging:
         pygame.draw.line(screen, (0, 0, 0), sling_right_anchor1, (bird_right.x + 25, bird_right.y + 25), 3)
         pygame.draw.line(screen, (0, 0, 0), sling_right_anchor2, (bird_right.x + 25, bird_right.y + 25), 3)
-        draw_trajectory(screen, bird_right, sling_right_pos, screen_height, color=(255,0,0))
+        draw_trajectory(screen, bird_right, sling_right_pos, screen_height, color=(255,255,255))
 
 
     # Loop through each block and its coordinate
