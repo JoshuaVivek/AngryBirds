@@ -1,6 +1,7 @@
 import random
 import pygame
 import time
+import numpy as np
 
 class AngryBird:
     def __init__(self, bird_type, x, y, velocity, image, damage_multiplier,selected=False):
@@ -167,3 +168,31 @@ def handle_bird_selection(event, birds, sling_left_pos, sling_right_pos, current
 
     return birds, bird_left, bird_right,current_player, bird_active  # Return the updated birds list, selected bird, and current player
 
+def draw_trajectory(screen, bird, sling_pos, screen_height, color=(255,0,0)):
+    # compute pull vector
+    pull_x = sling_pos[0] - bird.x
+    pull_y = sling_pos[1] - bird.y
+
+    # use the exact same multiplier as your launch code
+    # but *do not* negate, so the arc goes opposite the drag
+    vx = pull_x * 8
+    vy = pull_y * 8
+
+    # start at the bird’s center
+    x = bird.x + bird.image.get_width() // 2
+    y = bird.y + bird.image.get_height() // 2
+
+    g = 800  # gravity
+    dt = 0.1
+
+    points = []
+    for _ in range(5):
+        x += vx * dt
+        y += vy * dt
+        vy += g * dt
+        if y > screen_height:
+            break
+        points.append((int(x), int(y)))
+
+    for px, py in points:
+        pygame.draw.circle(screen, color, (px, py), 4)
