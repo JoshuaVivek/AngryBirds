@@ -47,25 +47,25 @@ screen_width, screen_height = screen.get_size()
 # Wood block images
 wood_images = {
     range(0,1): "None",
-    range(1, 31): "images\wood__(30_0).png",
-    range(32, 71): "images\wood__(70_30).png",
-    range(72, 101): "images\wood__(100_70).png"
+    range(1, 1501): "images\wood__(30_0).png",
+    range(1501, 3501): "images\wood__(70_30).png",
+    range(3501, 5001): "images\wood__(100_70).png"
 }
 
 # Stone block images
 stone_images = {
     range(0,1): "None",
-    range(1, 31): "images\stone__(30_0).png",
-    range(32, 71): "images\stone__(70_30).png",
-    range(72, 101): "images\stone__(100_70).png"
+    range(1, 1501): "images\stone__(30_0).png",
+    range(1501, 3501): "images\stone__(70_30).png",
+    range(3501, 5001): "images\stone__(100_70).png"
 }
 
 # Ice block images
 ice_images = {
     range(0,1): "None",
-    range(1, 31): "images\ice__(30_0).png",
-    range(32, 71): "images\ice__(70_30).png",
-    range(72, 101): "images\ice__(100_70).png"
+    range(1, 1501): "images\ice__(30_0).png",
+    range(1501, 3501): "images\ice__(70_30).png",
+    range(3501, 5001): "images\ice__(100_70).png"
 }
 
 # assigning coordinates to blocks
@@ -189,12 +189,43 @@ def check_collision(bird, blocks, block_coordinates, current_player):
             bird.vx *= -bird.restitution
             bird.vy *= -bird.restitution
             return
+        
+def check_win_condition(blocks, player1_score, player2_score):
+    """Checks if the winning condition is met."""
 
+    player1_blocks_destroyed = all(block.is_destroyed() for block in blocks[:6])
+    player2_blocks_destroyed = all(block.is_destroyed() for block in blocks[6:])
+    
+    if player1_blocks_destroyed and not player2_blocks_destroyed:
+        player1_score += 1500  # Bonus points for winning
+        if player1_score > player2_score:
+            return 1
+        elif player1_score < player2_score:
+            return 2
+        else:
+            return 3
+    if player2_blocks_destroyed and not player1_blocks_destroyed:
+        player2_score += 1500  # Bonus points for winning
+        if player2_score > player1_score:
+            return 2
+        elif player2_score < player1_score:
+            return 1
+        else:
+            return 3
+         
+    else:
+        return 0  # No winner yet
 
-
-
-
-
+def display_winner(screen, winner_name):
+    """Displays the winner's name at the center of the screen."""
+    font = pygame.font.Font(None, 72)
+    text = font.render(f"{winner_name} wins!", True, (255, 255, 255))  # White color
+    text_rect = text.get_rect(center=(screen_width // 2, screen_height // 2))
+    screen.blit(text, text_rect)
+    pygame.display.flip()
+    time.sleep(3)  # Display for 3 seconds
+    pygame.quit()
+    sys.exit()
 
 
 #assigning player who is playing first
@@ -375,6 +406,14 @@ while running:
     screen.blit(player1_score_text, text_rect1)
     screen.blit(player_text, text_rect2)
     screen.blit(player2_score_text, text_rect3)
+    
+    winner = check_win_condition(block, player1_score, player2_score)  # Check win condition
+    if winner == 1:
+        display_winner(screen, player1_name)
+    elif winner == 2:
+        display_winner(screen, player2_name)
+    elif winner == 3:
+        display_winner(screen, "It's a draw!")
 
     # Update display
     pygame.display.flip()
