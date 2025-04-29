@@ -102,6 +102,9 @@ for coord in bird_cooordinates:
 bird_left = AngryBird(bird_type="Red", x=245, y=screen_height - 205, velocity=0, image="None", damage_multiplier=1.0,selected = False) #creating bird for player1
 bird_right = AngryBird(bird_type="Red", x=screen_width - 280, y=screen_height - 200, velocity=0, image="None", damage_multiplier=1.0, selected = False) #creating bird for player2
 
+bird_left_owner = 1
+bird_right_owner = 2
+
 #displaying the game screen name
 pygame.display.set_caption("Angry Birds(Multiplayer)")
 
@@ -152,6 +155,44 @@ def launch_bird(bird, sling_pos):
     # Launch the bird
     bird.velocity = [dx * 500, dy * 500]  # Multiplied for speed tuning
     bird.launched = True
+    
+
+player1_score = 0 #player1 score
+player2_score = 0 #player2 score
+    
+# Check collision between bird and blocks
+def check_collision(bird, blocks, block_coordinates, current_player):
+    global player1_score, player2_score
+
+    bird_rect = bird.image.get_rect(topleft=(bird.x, bird.y))
+
+    for i, blk in enumerate(blocks):
+        if blk.is_destroyed():
+            continue
+
+        # Skip blocks belonging to the current player
+        if (current_player == 1 and i < 6) or (current_player == 2 and i >= 6):
+            continue
+
+        block_x, block_y = block_coordinates[i]
+        block_rect = pygame.Rect(block_x, block_y, 50, 50)
+
+        if bird_rect.colliderect(block_rect):
+            damage = bird.calculate_damage()
+            blk.take_damage(damage)
+
+            if current_player == 1:
+                player1_score += int(damage)
+            else:
+                player2_score += int(damage)
+
+            bird.vx *= -bird.restitution
+            bird.vy *= -bird.restitution
+            return
+
+
+
+
 
 
 
@@ -161,8 +202,6 @@ current_player = 1 #player1 is playing first
 bird_active = False #bird is not active at the start
 
 #player score
-player1_score = 0 #player1 score
-player2_score = 0 #player2 score
 
 # Initialize font
 pygame.font.init()
@@ -216,6 +255,12 @@ while running:
                 bird_right.vx = pull_x * 5
                 bird_right.vy = pull_y * 5
                 bird_active = True # Bird has been launched
+                
+            if bird_left is not None and bird_left.dragging:
+                bird_left_owner = 1  # set owner
+
+            elif bird_right is not None and bird_right.dragging:
+                bird_right_owner = 2  # set owner
 
 
     # Apply physics to launched birds
@@ -223,8 +268,10 @@ while running:
 
     if bird_left and bird_left.launched:
         bird_left.apply_physics(dt, screen_height)
+        check_collision(bird_left, block, block_coordinates, bird_left_owner)  # Check collision with blocks
     if bird_right and bird_right.launched:
         bird_right.apply_physics(dt, screen_height)
+        check_collision(bird_right, block, block_coordinates, bird_right_owner)  # Check collision with blocks
 
        # Time limit for the bird's flight
        # Time limit for the bird's flight
@@ -304,10 +351,11 @@ while running:
         x, y = block_coordinates[i]  # Get the corresponding coordinate
 
         image_path = current_block.get_image()  # Get the image path for the block
-        if image_path is not None and image_path != "None":
-            block_image = pygame.image.load(image_path).convert_alpha()  # Load the image
-            # Draw the block image at the (x, y) position
-            screen.blit(block_image, (x, y))
+        if not current_block.is_destroyed():
+            if image_path is not None and image_path != "None":
+                block_image = pygame.image.load(image_path).convert_alpha()  # Load the image
+                # Draw the block image at the (x, y) position
+                screen.blit(block_image, (x, y))
 
     #for each bird in birds, check if the image is not "None" and then draw it
     for bird in birds:

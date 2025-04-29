@@ -26,7 +26,7 @@ class AngryBird:
         Calculate the damage dealt by the bird based on its velocity.
 
         """
-        return self.damage_multiplier * (self.velocity[0] ** 2 + self.velocity[1] ** 2) ** 0.5
+        return self.damage_multiplier * (self.vx ** 2 + self.vy ** 2) ** 0.5
 
     def update_position(self, new_x, new_y):
         """
