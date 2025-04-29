@@ -251,15 +251,22 @@ def check_win_condition(blocks, player1_score, player2_score):
         return 0  # No winner yet
 
 def display_winner(screen, winner_name):
-    """Displays the winner's name at the center of the screen."""
-    font = pygame.font.Font(None, 72)
-    text = font.render(f"{winner_name} wins!", True, (255, 255, 255))  # White color
-    text_rect = text.get_rect(center=(screen_width // 2, screen_height // 2))
+    """Displays the winner background and name in the center."""
+    winner_background = pygame.image.load("images/winner.png").convert()
+    winner_background = pygame.transform.scale(winner_background, (screen_width, screen_height))
+    
+    screen.blit(winner_background, (0, 0))
+
+    font = pygame.font.SysFont('gabriola', 250)  # Adjust font size as needed
+    text = font.render(f"{winner_name}!", True, (255, 255, 255))  # White text
+    text_rect = text.get_rect(center=(screen_width // 2, 5 * screen_height // 8))
     screen.blit(text, text_rect)
+    
     pygame.display.flip()
-    time.sleep(3)  # Display for 3 seconds
+    time.sleep(3)
     pygame.quit()
     sys.exit()
+
 
 
 #assigning player who is playing first
@@ -270,7 +277,7 @@ bird_active = False #bird is not active at the start
 
 # Initialize font
 pygame.font.init()
-font = pygame.font.Font(None, 48)
+font = pygame.font.SysFont("Comic Sans MS", 48)
 
 bird_left_stop_time  = None
 bird_right_stop_time = None
