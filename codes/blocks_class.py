@@ -1,7 +1,7 @@
 import random
 
 class Block:
-    def __init__(self, block_type, max_health, images):
+    def __init__(self, block_type, max_health, images, damage_multiplier=1.0):
         """
         Initialize a block.
 
@@ -14,6 +14,7 @@ class Block:
         self.max_health = max_health
         self.current_health = max_health
         self.images = images
+        self.damage_multiplier = damage_multiplier
 
     def take_damage(self, damage):
         """

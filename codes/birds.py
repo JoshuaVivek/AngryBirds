@@ -4,7 +4,7 @@ import time
 import numpy as np
 
 class AngryBird:
-    def __init__(self, bird_type, x, y, velocity, image, damage_multiplier,selected=False):
+    def __init__(self, bird_type, x, y, velocity, image, damage_multiplier = 1.0, selected=False):
 
         self.bird_type = bird_type
         self.x = x
@@ -111,10 +111,10 @@ def create_random_bird(x, y):
         """
         # Define bird types and their properties
         bird_types = {
-            "Red": {"damage_multiplier": 1.0},
-            "Blue": {"damage_multiplier": 1.5},
+            "Red": {"damage_multiplier": 2.0},
+            "Blue": {"damage_multiplier": 2.0},
             "Chuck": {"damage_multiplier": 2.0},
-            "Bomb": {"damage_multiplier": 2.5}
+            "Bomb": {"damage_multiplier": 2.0}
         }
 
         # Load images for each bird type (assuming images are available in a dictionary)

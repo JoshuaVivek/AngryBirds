@@ -16,6 +16,14 @@ from blocks_class import *
 from birds import *
 
 
+DAMAGE_MATRIX = {
+    "Red":   { "wood": 1.2, "stone": 1.2, "ice": 1.2 },
+    "Blue":  { "wood": 1.0, "stone": 0.8, "ice" : 1.5 },
+    "Chuck": { "wood": 1.5, "stone": 0.8, "ice": 1.0 },
+    "Bomb":  { "wood": 1.1, "stone": 1.5, "ice": 0.9 },
+}
+
+
 
                           ######## main file ###########
                           
@@ -80,7 +88,7 @@ block = []
 # Iterate over the list and create Block objects
 for block_type in blocks:
     if block_type == "wood":
-        block1 = Block(block_type="wood_block", max_health = 5000, images=wood_images)
+        block1 = Block(block_type="wood_type", max_health = 5000, images=wood_images)
     elif block_type == "stone":
         block1 = Block(block_type="stone_block", max_health = 5000, images=stone_images)
     elif block_type == "ice":
@@ -200,8 +208,14 @@ def check_collision(bird, blocks, block_coordinates, current_player):
             bird.velocity = [bird.vx, bird.vy]
 
             # Damage & scoring
-            damage = int(bird.calculate_damage())
-            blk.take_damage(damage)
+            # NEW:
+            damage_mini = bird.calculate_damage()     
+            material_key = blk.block_type.split("_", 1)[0] # bird’s own velocity × bird.multiplier
+            # look up block’s material multiplier from the table:
+            factor = DAMAGE_MATRIX[bird.bird_type][material_key]
+            damage = int(damage_mini * factor)        
+            blk.take_damage(damage)# combined effect
+
             if current_player == 1:
                 player1_score += damage
             else:
